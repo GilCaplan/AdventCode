@@ -3,7 +3,7 @@ public class day1solution {
 	public static void main(String args[]){
 		List<Integer> input = new ArrayList<Integer>();
 		String s="";
-		File inputFile = new File("/C:/Users/avaca/eclipse-workspace/Advent2021/day1_input.txt");
+		File inputFile = new File("/day1_input.txt");
 		Scanner scan;
 		try {
 			scan = new Scanner(inputFile);
