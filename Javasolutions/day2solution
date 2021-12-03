@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -6,14 +8,25 @@ public class day2solution {
 	public static Scanner reader= new Scanner(System.in);
 	public static void main(String args[]){
 		List<String> input = new ArrayList<String>();
-		String i = reader.nextLine();
-		while(!i.equals("-1") ) {
-			input.add(i);
-			i = reader.nextLine();
+		String s="";
+		File inputFile = new File("/day2_input.txt");
+		Scanner scan;
+		try {
+			scan = new Scanner(inputFile);
+			while(scan.hasNext()) {
+				s = scan.nextLine();
+				input.add(s);
+			}
+			System.out.println("input received");
+			System.out.println(part1(input));
+			System.out.println(part2(input));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		System.out.println("input received");
-		System.out.println(part1(input));
-		System.out.println(part2(input));
+		
+		
+		
 	}
 	public static int part1(List<String> input) {
 		int foward=0;
