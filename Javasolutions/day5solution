@@ -1,0 +1,176 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+
+public class day5solution {
+	public static void main(String args[]){
+		List<String> input = new ArrayList<String>();
+		String s="";
+		File inputFile = new File("/day5_input.txt");
+		Scanner scan;
+		try {
+			scan = new Scanner(inputFile);
+			while(scan.hasNext()) {
+				s = scan.nextLine();
+				input.add(s);
+			}
+			System.out.println("input received");
+			System.out.println(part1(input));
+//			System.out.println(part2(input));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	public static int part1(List<String> input) {
+		String[] line,point;List<Coords> vent;
+		GraphSpot[][] graph =  initializeGraph(1000);
+		Coords c1,c2;
+		for (String pipe : input) {// 0,9 -> 5,9
+			line = pipe.split("->");//(x1,y1) ,(x2,y2)
+			line[0]= line[0].strip();//(x1,y1)
+			line[1]= line[1].strip();//(x2,y2)
+			point = line[0].split(",");
+			c1= new Coords(Integer.valueOf(point[0]),Integer.valueOf(point[1]));
+			point = line[1].split(",");
+			c2 = new Coords(Integer.valueOf(point[0]),Integer.valueOf(point[1]));
+			vent= c1.checkPoints(c2);
+			graph = addPoint(graph, vent);
+		}
+		 
+		return getPoints(graph);
+	}
+	public static GraphSpot[][] addPoint(GraphSpot[][] graph, List<Coords> vent) {
+		if(!vent.isEmpty()) {
+			for(Coords c : vent) {
+				graph[c.getX()][c.getY()].setCounter();
+			}
+		}
+		return graph;
+	}
+	public static int getPoints(GraphSpot[][] graph) {
+		int sum=0;
+		for(GraphSpot[] row : graph){
+		    for(GraphSpot spot : row){
+		    	if(spot.getCounter() > 1) {
+		    		sum+= 1;
+		    	}
+		    }
+		}
+		return sum;
+	}
+	public static GraphSpot[][] initializeGraph(int len){
+		GraphSpot[][] graph =  new GraphSpot[len][len];
+		for(int i =0; i< graph.length;i++){
+		    for(int j=0; j< graph[0].length;j++){
+		    	graph[i][j] = new GraphSpot(new Coords(i,j));
+		    }
+		}
+		return graph;
+	}
+	public static GraphSpot[][] printgraph(GraphSpot[][] graph){
+		for(GraphSpot[] row : graph){
+		    for(GraphSpot spot : row){
+		    	System.out.print(spot.getCounter() + ",");
+		    }
+		    System.out.println();
+		}
+		return graph;
+	}
+	public static GraphSpot[][] printgraph2(GraphSpot[][] graph){
+		System.out.println();
+		for(GraphSpot[] row : graph){
+		    for(GraphSpot spot : row){
+		    	System.out.print(spot.getC().toString() + ";");
+		    }
+		    System.out.println();
+		}
+		return graph;
+	}
+}
+
+
+
+//extra classes that are used in the code solution
+
+//class coords
+import java.util.LinkedList;
+import java.util.List;
+
+public class Coords {
+	private int x;
+	private int y;
+	Coords(int x1,int y1){
+		this.x= x1;
+		this.y=y1;
+	}
+	public int getX() {
+		return this.x;
+	}
+	public void setX(int x) {
+		this.x = x;
+	}
+	public int getY() {
+		return this.y;
+	}
+	public void setY(int y) {
+		this.y = y;
+	}
+	public List<Coords> checkPoints(Coords c){
+		int num1, num2;
+		List<Coords> len = new LinkedList<Coords>();
+		if(c.getX() == this.x && c.getY() == this.y) {
+			len.add(new Coords(this.x,this.y));
+			return len;
+		}
+		if (c.getX() == this.x) {
+			num1 = Math.max(c.getY(), this.y);
+			num2 = Math.min(c.getY(), this.y);
+			for(int i = num2;i <= num1;i++) {
+				len.add(new Coords(this.x, i));
+			}
+			return len;
+		}
+		if (c.getY() == this.y) {
+			num1 = Math.max(c.getX(), this.x);
+			num2 = Math.min(c.getX(), this.x);
+			for(int i = num2;i <= num1;i++) {
+				len.add(new Coords(i, this.y));
+			}
+			return len;
+		}
+		return len;	
+	}
+	@Override
+	public String toString() {
+		return "(" + this.x + "," + this.y + ")";
+	}
+}
+
+
+//graph spot class which is used in the code solution:
+
+public class GraphSpot {
+	private Coords c;
+	private int counter;
+	GraphSpot(Coords c1){
+		this.c = c1;
+		this.counter= 0;
+	}
+	public Coords getC() {
+		return this.c;
+	}
+	public int getCounter() {
+		return this.counter;
+	}
+	public void setCounter() {
+		this.counter+=1;
+	}
+	public void setC(Coords c) {
+		this.c = c;
+	}
+}
