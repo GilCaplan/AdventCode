@@ -101,3 +101,28 @@ public class day4solution {
 			}
 		}
 		return sum;
+	}
+}
+
+
+//helper class bingo
+
+
+public class Bingo {
+	private String number;
+	private boolean marked;
+	Bingo(String num){
+		this.number=num;
+		this.marked = false;
+	}
+	public String getNumber() {
+		return this.number;
+	}
+	public boolean getmarked() {
+		return this.marked;
+	}
+	public boolean setMarked() {
+		return this.marked = true;
+	}
+}
+
