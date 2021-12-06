@@ -11,7 +11,7 @@ public class day4solution {
 		Bingo[][] bingoPuzzle = new Bingo[5][5];
 		String s="";
 		String[] line;
-		File inputFile = new File("/day4_input.txt");
+		File inputFile = new File("/C:/Users/avaca/eclipse-workspace/Advent2021/day4_input.txt");
 		Scanner scan;
 		try {
 			scan = new Scanner(inputFile);
@@ -31,8 +31,8 @@ public class day4solution {
 				bingoPuzzle = new Bingo[5][5];
 			}
 			System.out.println("input received ");
-			System.out.println(part1(bing, input));
-//			System.out.println(part2(input));
+//			System.out.println(part1(bing, input));
+			System.out.println(part2(bing, input));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -56,7 +56,30 @@ public class day4solution {
 		}
 		return 0;
 	}
-	public static int part2(List<String> input) {
+	public static int part2(String[] bing, List<Bingo[][]> input) {
+		int num,ans = 0; int counter= input.size();boolean[] skip = new boolean[input.size()];
+//		System.out.println(input.size());
+		for(int i = 0; i< bing.length;i++) {//going through each bing
+			num = Integer.valueOf(bing[i]);
+			for(int j=0;j < input.size();j++) {//going through each bingo set 
+				for(int g=0;g<input.get(j).length;g++) {//going through each piece in bingo set
+					for(int h=0;h<input.get(j)[0].length;h++) {
+						if(input.get(j)[g][h].getNumber().equals(String.valueOf(num)) && !skip[j]) 
+							input.get(j)[g][h].setMarked();
+					}
+				}
+				if (check(input.get(j)) && !skip[j]) {
+					counter--;
+					skip[j] = true;
+					if(counter == 0) 
+						ans = j;
+				}
+			}
+			if(counter == 0) {
+				System.out.println("board is : "+ getSum(input.get(ans)) + "  " +num);
+				return getSum(input.get(ans))*num;
+			}
+		}
 		return 0;
 	}
 	public static boolean check(Bingo[][] input) {
@@ -78,26 +101,3 @@ public class day4solution {
 			}
 		}
 		return sum;
-	}
-}
-
-
-// helper bingo class which is used in the solution
-
-public class Bingo {
-	private String number;
-	private boolean marked;
-	Bingo(String num){
-		this.number=num;
-		this.marked = false;
-	}
-	public String getNumber() {
-		return this.number;
-	}
-	public boolean getmarked() {
-		return this.marked;
-	}
-	public boolean setMarked() {
-		return this.marked = true;
-	}
-}
