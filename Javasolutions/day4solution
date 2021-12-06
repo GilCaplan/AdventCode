@@ -11,7 +11,7 @@ public class day4solution {
 		Bingo[][] bingoPuzzle = new Bingo[5][5];
 		String s="";
 		String[] line;
-		File inputFile = new File("/C:/Users/avaca/eclipse-workspace/Advent2021/day4_input.txt");
+		File inputFile = new File("/day4_input.txt");
 		Scanner scan;
 		try {
 			scan = new Scanner(inputFile);
