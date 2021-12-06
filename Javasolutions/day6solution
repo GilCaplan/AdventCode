@@ -5,13 +5,13 @@ import java.util.Scanner;
 public class day6 {
 	public static void main(String args[]) throws FileNotFoundException{
 		String[] input;long[] cnt= new long[9];
-		File inputFile = new File("/C:/Users/avaca/eclipse-workspace/Advent2021/day6_input.txt");
+		File inputFile = new File("/day6_input.txt");
 		Scanner scan = new Scanner(inputFile); 
 			input =  scan.nextLine().split(",");
 			scan.close();
 			for(String f : input) 
 				cnt[Integer.valueOf(f)]++;
-			System.out.println(solution(cnt, 256));
+			System.out.println(solution(cnt, 256));//change 256 to 80 for part 1 solution
 	}
 	public static long solution(long[] fishes, int amount) {	
 		long newfish=0;
