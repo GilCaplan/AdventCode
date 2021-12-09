@@ -1,0 +1,175 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class day8solution {
+	public static void main(String[] args) throws FileNotFoundException{
+		List<String[]> input1 = new ArrayList<String[]>(), input2= new ArrayList<String[]>();
+		File inputFile = new File("/C:/Users/avaca/eclipse-workspace/Advent2021/days_input.txt");
+		Scanner scan = new Scanner(inputFile); String[] ss;
+		while(scan.hasNext()) {
+			ss = scan.nextLine().split(" \\| ");
+			input1.add(ss[0].split("\\s"));
+			input2.add(ss[1].split("\\s"));
+		}
+		scan.close();
+		System.out.println(part2(input1, input2));
+
+	}
+	public static int part1(List<String[]> input) {
+		int cnt = 0;
+		for(String[] wires : input) {
+			for(String wire : wires) {
+				if(wire.length() == 2 || wire.length() == 4 || wire.length() == 3 || wire.length() == 7)
+					cnt++;
+			}
+		}
+		return cnt;
+	}
+	public static int part2(List<String[]> input1, List<String[]> input2) {
+		int sum = 0, num;
+		for(int i=0; i< input1.size();i++) {
+			num =decode(input1.get(i), input2.get(i));
+			sum+= num ;
+			System.out.println(num);
+		}
+		return sum;
+	}
+	public static int decode(String[] pattern, String[] output) {
+		String[] SegmentBuild = getSegmentBuild(pattern);
+		String num="";
+		for(String o : output) {
+			num += getSegment(o.strip(),SegmentBuild);// cdgba
+		}
+		return Integer.valueOf(num);
+	}
+	private static String[] getSegmentBuild(String[] pattern) {
+		String[] solution = new String[] {"","","","","","",""}; int[] occur=getOccurences(pattern);
+		pattern = sortPattern(pattern);
+		solution[0] = pattern[1].replace(String.valueOf(pattern[0].charAt(0)),"").replace(String.valueOf(pattern[0].charAt(1)),"");//a
+		solution[6] = Used(occur, 6,  solution); //b which is 6 times total
+		solution[5] = Used(occur, 4,  solution);//e 4times
+		solution[4] = Used(occur, 9, solution);//f 9times
+		solution[1] = pattern[0].replace(solution[4], "");//c cause in 2segment(piece1) pattern and we know f
+		// d, g 7 times but d is in 4 (pattern[2]) digit pattern
+		solution[2] = Usedg(solution, pattern[2]);
+		solution[3] = getLast(solution);
+		return solution;
+	}
+
+	public static String getLast(String[] s) {
+		String compare="";
+		for(String str : s) {
+			compare+= str;
+		}
+		String ss = "abcdefg";String check="";
+		for(int i=0; i< ss.length();i++) {
+			check = String.valueOf(ss.charAt(i));
+			if(!compare.contains(check))
+				return check;
+		}
+		return "";
+	}
+	public static int[] getOccurences(String[] pattern) {
+		int[] occur = new int[7];//abcdefg
+		String s = "";
+		for(String pat : pattern) {
+			for(int i=0; i< pat.length();i++) {//b is used 6 times, e 4times, f 9 times
+				s = String.valueOf(pat.charAt(i));
+				if(s.equals("a"))
+				   occur[0]++;
+				else if(s.equals("b"))
+					   occur[1]++;
+				else if(s.equals("c"))
+					   occur[2]++;
+				else if(s.equals("d"))
+					   occur[3]++;
+				else if(s.equals("e"))
+					   occur[4]++;
+				else if(s.equals("f"))
+					   occur[5]++;
+				else if(s.equals("g"))
+					   occur[6]++;
+			}
+		}
+		return occur;
+	}
+	public static String Used(int[] getOccurence, int num, String[] nope) {
+		String no="";
+		for(String s : nope) {
+			no+=s;
+		}
+		String str = "abcdefg";
+		for(int i = 0; i< getOccurence.length;i++) {
+			if(getOccurence[i] == num && !no.contains(String.valueOf(str.charAt(i)))) {
+				return String.valueOf(str.charAt(i));
+			}
+		}
+		return "g";
+	}
+	public static String Usedg(String[] solution, String four) {
+		for(int i = 0;i< solution.length;i++) {
+			four = four.replace(solution[i], "");
+		}
+		return four;
+	}
+	public static String getLetter(String s1, String s2) {
+		if(s1.equals(s2.substring(1,2)))
+			return s2.substring(2);
+		return s2.substring(0);
+	}
+	public static String[] sortPattern(String[] pattern) {
+		String[] newPattern = new String[pattern.length];
+		int cnt1=1, cnt2=1;
+		for(String s : pattern) {
+			if(s.length() == 2)//1
+				newPattern[0] = s;
+			else if(s.length() == 3)//1
+				newPattern[1] = s;
+			else if(s.length() == 4)//1
+				newPattern[2] = s;
+			else if(s.length() == 5) {//3
+				newPattern[2+cnt1]=s;
+				cnt1++;
+			}
+			else if(s.length() == 6) {//3
+				newPattern[5+cnt2] = s;
+				cnt2++;
+			}
+			else if(s.length() == 7)//1
+				newPattern[9]= s;
+		}
+		return newPattern;
+	}
+	
+	public static int getSegment(String pattern, String[] segment) {
+		switch(pattern.length()) {//getting the piece according to length 
+			case 2:
+				return 1;
+			case 4:
+				return 4;
+			case 3:
+				return 7;
+			case 7:
+				return 8;
+		}
+		if(pattern.length() == 5) {
+			if(!pattern.contains(segment[6]) && !pattern.contains(segment[3])) {
+				return 2;
+			}
+			if(!pattern.contains(segment[6]) && !pattern.contains(segment[5])) {
+				return 3;
+			}
+			return 5;
+		}
+		if(!pattern.contains(segment[1])) {
+			return 6;
+		}
+		if(!pattern.contains(segment[5])) {
+			return 9;
+		}
+		return 0;
+	}
+}
