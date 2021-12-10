@@ -10,34 +10,30 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class day10solution {
-	public static HashMap<String,String> Pair = new HashMap<String,String>();
-	public static HashMap<String,Integer> value = new HashMap<String,Integer>();
-	public static HashMap<String,Integer> points = new HashMap<String,Integer>();
+	public static HashMap<String,String> Pair;
+	public static HashMap<String,Integer> value;
+	public static HashMap<String,Integer> points ;
 	public static List<String> Isopen = Arrays.asList(new String[] {"[","{","(","<"}); 
 	public static void main(String args[]){
 		List<String> input = new ArrayList<String>();
 		File inputFile = new File("/day10_input.txt");
 		Scanner scan;
-		Pair.put("[","]");
-		Pair.put("{","}");
-		Pair.put("<",">");
-		Pair.put("(",")");
-		value.put("]",57);
-		value.put(")",3);
-		value.put("}",1197);//part 1
-		value.put(">",25137);
-		points.put("(",1);//part 2
-		points.put("[",2);
-		points.put("{",3);
-		points.put("<",4);
+		Pair= new HashMap<>(){{
+			put("[","]");put("{","}");put("<",">");put("(",")");
+		}};
+		value = new HashMap<>() {{
+			put("]",57);put(")",3);put("}",1197);put(">",25137);
+		}};//part 1
+		points = new HashMap<>() {{
+			put("(",1);put("[",2);put("{",3);put("<",4);//part 2
+		}};
 		try {
 			scan = new Scanner(inputFile);
 			while(scan.hasNext()) {
 				input.add(scan.nextLine());
 			}
 			System.out.println("input received");
-			System.out.println(part1(input));
-			System.out.println(part2(input));
+			System.out.println("part 1 solution is: "+ part1(input)+ "  part 2 solution is: "+part2(input));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -59,12 +55,10 @@ public class day10solution {
 		for(int i=0;i<line.size();i++) {
 			if(Isopen.contains(line.get(i)))
 				check.push(line.get(i));
-			else if(Pair.get(check.peek()).equals(line.get(i))) {
+			else if(Pair.get(check.peek()).equals(line.get(i))) 
 				check.pop();
-			}
-			else {
+			else 
 				return value.get(line.get(i));
-			}
 		}
 		if(!check.isEmpty())
 			return -1;
@@ -72,35 +66,27 @@ public class day10solution {
 	}
 	public static String getClose(List<String> line) {
 		for(int i = 1 ; i< line.size(); i++) {
-			if(line.get(i).equals("]") || line.get(i).equals("}") || line.get(i).equals("}") ||line.get(i).equals(")") ) {
-				if(!Pair.get(line.get(i-1)).equals(line.get(i)))
-					return line.get(i);
-			}
+			if(line.get(i).matches("/]/}/)/>") && !Pair.get(line.get(i-1)).equals(line.get(i))) 
+				return line.get(i);
 		}
 		return "";
 	}
 	public static long part2(List<String> input) {
 		List<Long> sum =new LinkedList<Long>();
-		List<String> newLine = new ArrayList<String>();
-		List<String> incomplete = new ArrayList<String>();
+		List<String> newLine = new ArrayList<String>(),incomplete = new ArrayList<String>();
 		
 		for(String line : input) {
-			for(String s : line.split("")) {
+			for(String s : line.split("")) 
 				newLine.add(s);
-			}
-			if(getErrorNum(newLine) == -1) {
+			if(getErrorNum(newLine) == -1) 
 				incomplete.add(line);
-			}
 			newLine = new ArrayList<String>();
 		}
 		for(String letsComplete: incomplete) {
 			sum.add(CompleteScore(letsComplete));
 		}
-		
 		Collections.sort(sum);
-		int middle = sum.size()/2 ;
-		System.out.println(sum.size()/2 + " "+ sum.size());
-		return sum.get(middle);
+		return sum.get(sum.size()/2);
 	}
 	public static long CompleteScore(String line) {
 		Stack<String> check = new Stack<String>();
