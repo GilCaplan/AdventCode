@@ -1,3 +1,11 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+
 public class day12solution {
 	public static HashMap<String, List<String>> connections = new HashMap<String, List<String>>();
 	
@@ -37,30 +45,29 @@ public class day12solution {
 		for(String c : connections.keySet()) {
 			System.out.println(c + " : "+ connections.get(c));
 		}
-		System.out.println(search("start", new LinkedList<String>(), false));
+		System.out.println("part 1 solution is: " + search("start", new LinkedList<String>(), false));
+		System.out.println("part 2 solution is: "+search("start", new LinkedList<String>(), true));
 
 	}
-
-	}
-	public static int searchp1(String current, List<String> lowerUsed) {
+	public static int search(String current, List<String> lowerUsed, boolean part2) {
 		if(current.equals("end"))
 			return 1;
 		int cnt = 0;
 		for(String next : connections.get(current)) {
-			if(!lowerUsed.contains(next)) {
-				if(isLowerCase(next)) {
+			if(!isLowerCase(next)) 
+				cnt += search(next, lowerUsed, part2);
+			else {
+				if(!lowerUsed.contains(next)) {
 					lowerUsed.add(next);
-					cnt += searchp1(next, lowerUsed);
+					cnt += search(next, lowerUsed, part2);
 					lowerUsed.remove(next);
 				}
-				else {
-					cnt += searchp1(next, lowerUsed);
-				}
+				else if(part2 && !next.equals("end") && !next.equals("start"))
+					cnt += search(next, lowerUsed, false);
 			}
 		}
 		return cnt;
 	}
-	
 	
 	private static boolean isLowerCase(String str){
         char[] charArray = str.toCharArray();
