@@ -26,34 +26,20 @@ public class day12solution {
 		for(String s : input) {
 			close = new LinkedList<String>();
 			path = s.split("-");
-			if(connections.get(path[0]) != null) {
-				close = connections.get(path[0]);
-				if(!path[1].equals("start"))
-					close.add(path[1]);
+			for(int i =0; i< 2;i++) {
+				if(!connections.containsKey(path[i]))
+					connections.put(path[i], new LinkedList<>());
+				if(!path[1-i].equals("start"))
+					connections.get(path[i]).add(path[1-i]);
 			}
-			else {
-				if(!path[1].equals("start"))
-					close.add(path[1]);
-			}
-			connections.put(path[0],close);
 			
-			close = new LinkedList<String>();
-			if(connections.get(path[1]) != null) {
-				close = connections.get(path[1]);
-				if(!path[0].equals("start"))
-					close.add(path[0]);
-			}
-			else {
-				if(!path[0].equals("start"))
-					close.add(path[0]);
-			}
-			connections.put(path[1],close);
 		}
 		for(String c : connections.keySet()) {
 			System.out.println(c + " : "+ connections.get(c));
 		}
-//		System.out.println(searchp1("start", new LinkedList<String>()));
-		System.out.println(searchp2("start", new LinkedList<String>()));
+		System.out.println(search("start", new LinkedList<String>(), false));
+
+	}
 
 	}
 	public static int searchp1(String current, List<String> lowerUsed) {
