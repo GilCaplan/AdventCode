@@ -1,3 +1,10 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Stack;
+
 public class day5 {
 	public static int len = 9;
 	public static List<String[]> commands;
@@ -7,6 +14,16 @@ public class day5 {
 		part1(table);//A,X=rock, B,Y =paper, C,Z=Scissors
 		table = inputStacks(getinput("day5Table"));
 		part2(table);
+	}
+	public static void part1(List<Stack<String>> table) {
+		for(String[] c: commands) {
+			for(int i=0; i < Integer.valueOf(c[0]);i++) {
+				table.get(Integer.valueOf(c[2])-1).push(table.get(Integer.valueOf(c[1])-1).pop());
+			}
+		}
+		for(Stack<String> stack : table) {
+			System.out.print(stack.peek());
+		}
 	}
 	public static void part2(List<Stack<String>> table) {
 		List<String> crates = new ArrayList<String>();
@@ -25,16 +42,6 @@ public class day5 {
 		}
 	}
 
-	public static void part1(List<Stack<String>> table) {
-		for(String[] c: commands) {
-			for(int i=0; i < Integer.valueOf(c[0]);i++) {
-				table.get(Integer.valueOf(c[2])-1).push(table.get(Integer.valueOf(c[1])-1).pop());
-			}
-		}
-		for(Stack<String> stack : table) {
-			System.out.print(stack.peek());
-		}
-	}
 	public static List<String[]> commands(List<String> input){
 		List<String[]> commands = new ArrayList<String[]>();
 		for(String line : input) {
@@ -70,4 +77,5 @@ public class day5 {
 	        list.add(reader.nextLine());
 		return list;
 	}
+}
 }
