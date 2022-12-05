@@ -54,7 +54,6 @@ public class day5 {
 	}
 	public static List<Stack<String>> inputStacks(List<String> tableInput){
 		List<Stack<String>> table = new ArrayList<Stack<String>>();
-		String[] row = new String[tableInput.size()-1];
 		String r = "";
 		for(int i = 0; i < len; i++) {
 			table.add(new Stack<String>());
