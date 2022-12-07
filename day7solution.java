@@ -8,28 +8,27 @@ public class day7 {
 	public static void main(String[] args) throws FileNotFoundException {
 		List<String[]> input = getinput("day7input");
 		var parent = new Dir(null);
-		var curDir = parent;
+		var currentDir = parent;
 		for(int i=0; i < input.size(); i++) {//commands $: cd\ls
 			var command = input.get(i);
 			if(command.length > 1 && command[0].equals("$")){
-				if(command[1].equals("cd")){
-					if(command[2].equals("..")) {//move out a directory
-						curDir = curDir.getParent();
-					} else {
-						var newDir = new Dir(curDir);
-						curDir.addChild(newDir);
-						curDir = newDir;
+				if(command[1].equals("cd")){//go back one
+					if(command[2].equals("..")) //move out a directory
+						currentDir = currentDir.getParent();
+					else {
+						var newDir = new Dir(currentDir);
+						currentDir.addChild(newDir);//add the child Directory
+						currentDir = newDir;//set it to the new directory
 					}
 				}
-				if(command[1].equals("ls")){
-					//find current directory
+				if(command[1].equals("ls")){//find current directory
 					while(i+1 < input.size() && !input.get(i+1)[0].equals("$")) {
 						i++;
 						command = input.get(i);//get's line from commands
 						if(command[0].equals("dir")) {
-							continue;// we can ignore any dirs that we dont `cd` into cuz we dont know their size
+							continue;//ignore, not relevant. can't use cd on it.
 						}
-						curDir.addFile(Integer.parseInt(command[0]));//file name, size
+						currentDir.addFile(Integer.parseInt(command[0]));//file name, size
 					}
 				}
 			}
@@ -40,35 +39,28 @@ public class day7 {
 		part2(sumDir);
 	}
 	public static void part1(List<Integer> sumDir) {
-		sumDir.remove(sumDir.size() - 1); // remove the PARENT dir
 		int totalSum = 0;
-		for(int sum: sumDir) {
-			if(sum <= 100000) {
+		for(int sum : sumDir) 
+			if(sum <= 100000) 
 				totalSum += sum;
-			}
-		}
 		System.out.println(totalSum);
 	}
 	public static void part2(List<Integer> sumDir) {
-		var Space = 70000000 - sumDir.get(sumDir.size()-1);
-		var min = 1000000000;
-		for(var sum : sumDir) {
-			if(Space + sum > 30000000) {
+		var Space = 70000000 - sumDir.get(sumDir.size()-1);//Space in the system
+		var min = 70000000;//set high since we want to find the minimal amount
+		for(var sum : sumDir)
+			if(Space + sum > 30000000)
 				min = Math.min(min, sum);
-			}
-		}
 		System.out.println(min);
 	}
 	public static int suminDirectories(Dir dir, List<Integer> sumDir){
-		var res = 0;
-		for (var file: dir.getFiles()) {
-			res += file;
-		}
-		for (var child: dir.getDirectories()) {
-			res += suminDirectories(child, sumDir);
-		}
-		sumDir.add(res);
-		return res;
+		var sum = 0;
+		for (var file: dir.getFiles()) 
+			sum += file;
+		for (var child: dir.getDirectories()) 
+			sum += suminDirectories(child, sumDir);
+		sumDir.add(sum);
+		return sum;
 	}
 	public static List<String[]> getinput(String filename) throws FileNotFoundException {
 		Scanner reader = new Scanner(new File("C:\\Users\\USER\\eclipse-workspace\\advent2022\\src\\inputs\\"+filename+".txt"));
@@ -79,7 +71,11 @@ public class day7 {
 	}
 }
 
+
 //class/object Dir
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Dir {
 	private final List<Integer> files;
