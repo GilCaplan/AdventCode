@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class day7 {
 	public static void main(String[] args) throws FileNotFoundException {
 		List<String[]> input = getinput("day7input");
-		var parent = new Dir("PARENT", null);
+		var parent = new Dir(null);
 		var curDir = parent;
 		for(int i=0; i < input.size(); i++) {//commands $: cd\ls
 			var command = input.get(i);
@@ -16,7 +16,7 @@ public class day7 {
 					if(command[2].equals("..")) {//move out a directory
 						curDir = curDir.getParent();
 					} else {
-						var newDir = new Dir(command[2], curDir);
+						var newDir = new Dir(curDir);
 						curDir.addChild(newDir);
 						curDir = newDir;
 					}
@@ -29,7 +29,7 @@ public class day7 {
 						if(command[0].equals("dir")) {
 							continue;// we can ignore any dirs that we dont `cd` into cuz we dont know their size
 						}
-						curDir.addFile(new Day7File(command[1], Integer.parseInt(command[0])));//file name, size
+						curDir.addFile(Integer.parseInt(command[0]));//file name, size
 					}
 				}
 			}
@@ -62,7 +62,7 @@ public class day7 {
 	public static int suminDirectories(Dir dir, List<Integer> sumDir){
 		var res = 0;
 		for (var file: dir.getFiles()) {
-			res += file.getSize();
+			res += file;
 		}
 		for (var child: dir.getDirectories()) {
 			res += suminDirectories(child, sumDir);
@@ -81,17 +81,12 @@ public class day7 {
 
 //class/object Dir
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Dir {
-	private final String name;
 	private final List<Integer> files;
 	private final List<Dir> directories;
 	private final Dir parent;
 
-	public Dir(String name, Dir parent) {
-		this.name = name;
+	public Dir(Dir parent) {
 		this.parent = parent;
 		this.files = new ArrayList<>();
 		this.directories = new ArrayList<>();
