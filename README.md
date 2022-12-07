@@ -1,1 +1,1 @@
-# AdventCode, solutions for 2022 is located in the Advent2022 branch
+# AdventCode
